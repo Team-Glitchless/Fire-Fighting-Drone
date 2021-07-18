@@ -81,6 +81,238 @@
       <elevation>0</elevation>
       <heading_deg>0</heading_deg>
     </spherical_coordinates>
+
+    <actor name="actor0">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>0.321594 2.531738 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor1">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>2.279598 0.745272 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor2">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>-3.127988 6.849838 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor3">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>4.205840 17.117900 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor4">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>4.534978 6.816578 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor5">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>-3.586142 10.844502 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor6">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>-0.138076 -6.081182 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor7">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>4.031602 -8.354578 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+    <actor name="actor8">
+        <skin>
+          <filename>file://walk.dae</filename>
+          <scale>1.0</scale>
+        </skin>
+        <pose>0 0 0 0 0 0</pose>
+        <animation name="walking">
+          <filename>file://walk.dae</filename>
+          <scale>1.000000</scale>
+          <interpolate_x>true</interpolate_x>
+        </animation>
+        <script>
+          <loop>true</loop>
+          <delay_start>0.000000</delay_start>
+          <auto_start>true</auto_start>
+          <trajectory id="0" type="walking">
+              <waypoint>
+                <time>0.100000</time>
+                <pose>-0.783446 16.492602 0.000000 0.000000 0.000000 -1.000000</pose>
+              </waypoint>
+          </trajectory>
+        </script>
+    </actor>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <model name='world3_p1'>
       <pose frame=''>0.259495 -5.86641 0 0 -0 0</pose>
       <link name='Wall_19'>
