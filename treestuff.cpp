@@ -17,14 +17,14 @@
 
 
 using namespace octomap;
-/*void print_query_info(point3d query, OcTreeNode* node) {
+void print_query_info(point3d query, OcTreeNode* node) {
     if (node != NULL) 
     {
         std::cout << "occupancy probability at " << query << ":\t " << node->getOccupancy() << std::endl;
     }
     else 
         std::cout << "occupancy probability at " << query << ":\t is unknown" << std::endl;    
-}*/
+}
 ros::Publisher goal_pub;
 
 class rrt {
@@ -34,26 +34,10 @@ class rrt {
         threshold = thres;
         std::cout << "Hemlo" << std::endl;
     }*/
-    rrt() {
-        double min_x, min_y, min_z, max_x, max_y, max_z;
-        octre->getMetricMax(max_x, max_y, max_z);
-        octre->getMetricMin(min_x, min_y, min_z);
-        this -> setBounds(min_x, min_y, min_z, max_x, max_y, max_z);
-        threshold = octre->getOccupancyThres();
-        total = octre->calcNumNodes();
-        treeCenter = octre->begin_leafs().getCoordinate();
-        if (this -> checkGoal()) {
-            std::vector <double> res = getGoal();
-            geometry_msgs::Point ress;
-            ress.x = res[0];
-            ress.y = res[1];
-            ress.z = res[2];
-            goal_pub.publish(ress);
-        }
-        else {
-            std::cout << "Goal Achieved";
-        }
-    }
+    /*rrt() {
+        this -> getGoal();
+        
+    }*/
     void getviews(point3d origin, std::vector<point3d> rays[10]){
         octre->computeRay(origin, point3d(max_x, max_y, origin.z()), rays[0]);
         octre->computeRay(origin, point3d(0, max_y, origin.z()), rays[1]);
@@ -68,13 +52,15 @@ class rrt {
     }
     void getDist(){
         for (int i = 0; i < 10; i++) {
-            int dit = 0;
+            int dit = 1;
             for (int j = 0; j < ray[i].size(); j++){
                 OcTreeNode* nd = octre->search(ray[i][j]);
                 dit += 1;
                 if (nd != NULL)
                     if (nd->getOccupancy() > threshold)
-                        dist[i] = dit; 
+                        dist[i] = dit;
+                        //std::cout << "Obstacle :" << ray[i][j] << std::endl;
+                        //break; 
             }
         }
     }
@@ -88,23 +74,44 @@ class rrt {
         for (int i = 0; i < 10; i++) {
             for (int j = 0; j < rys[i].size(); j++){
                 OcTreeNode* nd = octre->search(rys[i][j]);
+                //print_query_info(rys[i][j], nd);
                 if (nd == NULL)
                      unknown += 1;
             }
         }
         return unknown;
     }
-    std::vector<double> getGoal() {
+    //std::vector<double> getGoal() {
+    void getGoal(){
         this -> getviews(currentPos, ray);
         this -> getDist();
-        std::vector<double> entropy(10, 0);
+        //std::vector<double> entropy(10, 0);
+        std::vector<double> entropy;
+        std::cout << "Entropies :";
         for (int i = 0; i < 10 ; i++) {
-            entropy[i] = infoGain(ray[i][dist[i] - 1]) / vectorDist(currentPos, ray[i][dist[i] - 1]);
+            int temp = infoGain(ray[i][dist[i] - 1]) / vectorDist(currentPos, ray[i][dist[i] - 1]);
+            std::cout << temp << " ";
+            entropy.push_back(temp);
         }
-        int maxEntropy = std::max_element(entropy.begin(),entropy.end()) - entropy.begin();
-        return {currentPos.x() - ray[maxEntropy][dist[maxEntropy] - 1].x(),
+        std::cout << std::endl;
+        //int maxEntropy = std::max_element(entropy.begin(),entropy.end()) - entropy.begin();
+        auto maxEntropy = std::max_element(entropy.begin(),entropy.end()) - entropy.begin();
+        //if (this -> checkGoal()) {
+            //std::vector <double> res = getGoal();
+            geometry_msgs::Point ress;
+            ress.x = currentPos.x() - ray[maxEntropy][dist[maxEntropy] - 1].x();
+            ress.y = currentPos.y() - ray[maxEntropy][dist[maxEntropy] - 1].y();
+            ress.z = currentPos.z() - ray[maxEntropy][dist[maxEntropy] - 1].z();
+            goal_pub.publish(ress);
+            std::cout << "Published Goal :" << ress << std::endl;
+            //std::cout<<"publishes\n";
+        /*}
+        else {
+            std::cout << "Goal Achieved";
+        }*/
+        /*return {currentPos.x() - ray[maxEntropy][dist[maxEntropy] - 1].x(),
         currentPos.y() - ray[maxEntropy][dist[maxEntropy] - 1].y(),
-        currentPos.z() - ray[maxEntropy][dist[maxEntropy] - 1].z()};
+        currentPos.z() - ray[maxEntropy][dist[maxEntropy] - 1].z()};*/
     }
     void getUnknown() {
         point3d_list ct;
@@ -115,17 +122,30 @@ class rrt {
         getUnknown();
         double searched = total - unknown;
         double percent = searched / total;
+        std::cout << "Percent known: " << percent << std::endl;
         if (percent < 80) return false;
         return true; 
     }
     void currPos(double x, double y, double z) {
         currentPos = point3d(x, y, z);
+        std::cout << "Current pos: " << currentPos << std::endl;
     }
     void setBounds(double x_min, double x_max, double y_min, double y_max, double z_min, double z_max) {
-        min_x = x_min; min_y = y_min; min_z = z_min; max_x = x_max; max_y = y_max; max_z = z_max;
+        min_x = -5; min_y = -15; min_z = 0; max_x = 5; max_y = 15; max_z = 5;
     }
     void getOctree(octomap::OcTree* otre) {
         octre = otre;
+        double min_x, min_y, min_z, max_x, max_y, max_z;
+        octre->getMetricMax(max_x, max_y, max_z);
+        octre->getMetricMin(min_x, min_y, min_z);
+        this -> setBounds(min_x, min_y, min_z, max_x, max_y, max_z);
+        threshold = octre->getOccupancyThres();
+        total = octre->calcNumNodes();
+        //std::cout<<total<<std::endl;
+        treeCenter = octre->begin_leafs().getCoordinate();
+        std::cout << "Tree Center" << treeCenter << std::endl;
+        std::cout << "Max bounds" << max_x << " " << max_y << " " << max_z << std::endl;
+        std::cout << "Min bounds" << min_x << " " << min_y << " " << min_z << std::endl;
     }
     private:
         octomap::OcTree* octre;
@@ -136,13 +156,14 @@ class rrt {
         const int step_size = 4;
         std::vector<point3d> ray[10];
         int dist[10];
+
 };
 
 
 void octomapCallback(const octomap_msgs::Octomap::ConstPtr &msg, rrt* planner) {
     octomap::OcTree* tree_oct = dynamic_cast<octomap::OcTree*>(octomap_msgs::msgToMap(*msg));
     //std::cout << tree_oct->calcNumNodes() << std::end;
-    std::vector <point3d> ray;
+    //std::vector <point3d> ray;
     /*point3d start(0,0,0), end (1,1,1);
     if (tree_oct->computeRay(start, end, ray)) {
         for (std::size_t i = 0; i < ray.size(); ++i) {
@@ -152,6 +173,7 @@ void octomapCallback(const octomap_msgs::Octomap::ConstPtr &msg, rrt* planner) {
         std::cout << "hemlo";      
     }*/
     planner -> getOctree(tree_oct);
+    planner -> getGoal();
     
     //octomap::OcTree::leaf_iterator root = tree_oct->begin_leafs();
     //std::cout << "Center coordinate :" <<root.getCoordinate() << std::endl;
@@ -176,7 +198,7 @@ int main(int argc, char **argv)
     ros::Subscriber pose_sub = n.subscribe<geometry_msgs::PoseStamped>("/mavros/local_position/pose", 1, boost::bind(&get_pose, _1, &planner));
     ros::Subscriber octree_sub = n.subscribe<octomap_msgs::Octomap>("/octomap_binary", 1, boost::bind(&octomapCallback, _1, &planner));    
     
-    goal_pub = n.advertise<geometry_msgs::Point>( "next_goal", 0);
+    goal_pub = n.advertise<geometry_msgs::Point>( "next_goal", 10);
     ros::spin();
     return 0;
 }
