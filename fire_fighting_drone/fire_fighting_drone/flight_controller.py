@@ -119,16 +119,18 @@ class FlightController(Node):
         background thread (see :func:`main`), so we must not call
         ``rclpy.spin_until_future_complete`` here: that would spin this same
         node from a second thread concurrently with the executor and is not
-        safe. Instead we simply poll the future while the executor thread
-        processes its completion in the background.
+        safe. Instead we attach a done-callback that sets a ``threading.Event``
+        and block this (caller) thread on that event, so there is no polling
+        latency and no CPU spent busy-waiting while the executor thread
+        processes the future's completion in the background.
         """
         if not client.wait_for_service(timeout_sec=timeout_sec):
             self.get_logger().error(f'Service {client.srv_name} not available')
             return None
+        done_event = threading.Event()
         future = client.call_async(request)
-        start = time.time()
-        while not future.done() and (time.time() - start) < timeout_sec:
-            time.sleep(0.05)
+        future.add_done_callback(lambda _future: done_event.set())
+        done_event.wait(timeout=timeout_sec)
         return future.result()
 
     def toggle_arm(self, arm_bool):

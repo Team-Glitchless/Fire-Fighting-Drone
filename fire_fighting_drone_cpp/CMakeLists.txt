@@ -26,7 +26,7 @@ include_directories(include ${OCTOMAP_INCLUDE_DIRS})
 
 add_executable(nbvp_planner_node src/nbvp_planner_node.cpp)
 ament_target_dependencies(nbvp_planner_node
-  rclcpp geometry_msgs nav_msgs std_msgs std_srvs octomap_msgs)
+  rclcpp geometry_msgs nav_msgs std_msgs std_srvs octomap_msgs tf2)
 target_link_libraries(nbvp_planner_node ${OCTOMAP_LIBRARIES})
 
 add_executable(pointcloud_transform_node src/pointcloud_transform_node.cpp)

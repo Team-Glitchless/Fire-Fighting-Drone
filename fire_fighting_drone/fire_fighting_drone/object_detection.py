@@ -125,9 +125,9 @@ def center_finder(img, outputs):
     for i in range(nums[0]):
         x1y1 = np.array((np.array(boxes[i][0:2]) * wh).astype(np.int32))
         x2y2 = np.array((np.array(boxes[i][2:4]) * wh).astype(np.int32))
-        xy = (x1y1 + x2y2) / 2
+        xy = ((x1y1 + x2y2) // 2).astype(np.int32)
         centers.append(xy)
-    return np.array(centers)
+    return np.array(centers, dtype=np.int32)
 
 
 def dist_z_finder(centers, depth):

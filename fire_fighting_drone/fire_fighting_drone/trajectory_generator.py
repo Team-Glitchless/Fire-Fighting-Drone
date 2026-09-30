@@ -29,7 +29,6 @@ class min_snap:
         #self.t_test = self.time_array(0.1)
         #self.t =np.copy(self.t_test)
         #self.t=[0.2, 0.25954395815091413, 0.2882510441216574, 0.34498765334273723]
-        print(self.t)
         self.q=np.zeros(shape=(n*m,1)).reshape((n*m,))
         self.G=np.zeros(shape=((4*m)+2,n*m))
         self.h=np.zeros(shape=((4*m)+2,1)).reshape(((4*m)+2,))
@@ -79,7 +78,6 @@ class min_snap:
         for i in Q_list:
             Q=block_diag(Q,i)
         self.Q=Q+(0.0001*np.identity(self.n*self.m))
-        print(type(self.Q),'typeofQ')
 
     def form_A(self):
         n = self.n
@@ -130,10 +128,8 @@ class min_snap:
             pva_const=pva_const+pva_i
         A[(6+m-1):]=pva_const
         self.A = A
-        print(type(self.A),'typeofA')
 
     def solve(self):
-        print(type(self.q),type(self.G),type(self.h),type(self.b_x))
         self.p_x=solve_qp(self.Q, self.q,self.G,self.h, self.A, self.b_x)
         self.p_y=solve_qp(self.Q, self.q,self.G,self.h, self.A, self.b_y)
         self.p_z=solve_qp(self.Q, self.q,self.G,self.h, self.A, self.b_z)
@@ -190,7 +186,6 @@ class min_snap:
         p.append(u)
         p.append(a)
         p = np.array(p)
-        print(p.shape)
         return p
 
 
@@ -204,7 +199,6 @@ class min_snap:
         self.y = y
         self.z = z
         self.t=self.time_array(0.1)
-        print(self.t)
         self.q=np.zeros(shape=(n*m,1)).reshape((n*m,))
         self.G=np.zeros(shape=((4*m)+2,n*m))
         self.h=np.zeros(shape=((4*m)+2,1)).reshape(((4*m)+2,))
