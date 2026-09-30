@@ -1,0 +1,15 @@
+# Python dependencies that are not available as rosdep/apt packages and must
+# be installed with pip inside your ROS 2 Jazzy Python environment.
+#
+#   python3 -m pip install -r requirements.txt
+#
+# numpy, scipy and opencv-python are also declared as rosdep keys in
+# fire_fighting_drone/package.xml and are best installed via apt/rosdep when
+# possible; they are listed here too so a plain virtualenv install works.
+numpy
+scipy
+qpsolvers
+matplotlib
+opencv-python
+tensorflow
+absl-py

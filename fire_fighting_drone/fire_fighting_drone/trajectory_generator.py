@@ -1,12 +1,19 @@
-#!/usr/bin/env python
+"""Minimum-snap polynomial trajectory generation between waypoints.
+
+Pure-Python/NumPy module (no ROS dependency), ported unchanged in behavior
+from the ROS 1 ``trajectory_v1.py`` so it can be imported from either ROS 1
+or ROS 2 nodes. ``plot()`` lazily imports matplotlib so headless ROS 2 nodes
+that only need ``points()`` do not need a display/matplotlib backend.
+"""
 from math import factorial as f
-import numpy as np
-from scipy.linalg import block_diag
-from qpsolvers import solve_qp
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 import warnings
-warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+
+import numpy as np
+from qpsolvers import solve_qp
+from scipy.linalg import block_diag
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+
 
 class min_snap:
     def __init__(self, x, y, z, v, n=8):
@@ -132,6 +139,9 @@ class min_snap:
         self.p_z=solve_qp(self.Q, self.q,self.G,self.h, self.A, self.b_z)
 
     def plot(self):
+        import matplotlib.pyplot as plt  # noqa: local import, only needed for plotting.
+        from mpl_toolkits import mplot3d  # noqa: F401, registers 3D projection.
+
         plt.figure(figsize=(10,5))
         ax = plt.axes(projection ='3d')
 
