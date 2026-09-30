@@ -97,6 +97,15 @@ class FlightController(Node):
 
         self.last_vel_time = self.get_clock().now()
 
+        # Single dedicated worker thread consumes NBVP goals one at a time so
+        # concurrent /next_goal messages cannot race on the shared
+        # set_x/set_y/set_z/set_yaw setpoint state used by move_to()/set_pose().
+        self._goal_lock = threading.Lock()
+        self._pending_goal = None
+        self._goal_event = threading.Event()
+        self._goal_worker = threading.Thread(target=self._goal_worker_loop, daemon=True)
+        self._goal_worker.start()
+
         self.get_logger().info('Flight controller initialized')
 
     # ------------------------------------------------------------------
@@ -194,14 +203,33 @@ class FlightController(Node):
         This closes the previously-missing integration gap between the
         exploration planner (``/next_goal``) and the flight controller: the
         ROS 1 planner published viewpoints that nothing ever consumed.
+
+        The goal is handed off to a single dedicated worker thread (see
+        :meth:`_goal_worker_loop`) rather than spawned as a new thread per
+        message, so that concurrent goals cannot race on the shared
+        setpoint state used by :meth:`move_to`/:meth:`set_pose`. If a newer
+        goal arrives while an older one is still in flight, only the newest
+        goal is flown to once the current motion completes.
         """
         if not self.follow_nbvp_goals:
             return
         z = msg.point.z if self.nbvp_altitude == 0.0 else self.nbvp_altitude
         self.get_logger().info(
             f'Received NBVP goal: ({msg.point.x:.2f}, {msg.point.y:.2f}, {z:.2f})')
-        threading.Thread(
-            target=self.move_to, args=(msg.point.x, msg.point.y, z), daemon=True).start()
+        with self._goal_lock:
+            self._pending_goal = (msg.point.x, msg.point.y, z)
+        self._goal_event.set()
+
+    def _goal_worker_loop(self):
+        """Serially consumes NBVP goals, always flying to the latest one."""
+        while rclpy.ok():
+            self._goal_event.wait()
+            with self._goal_lock:
+                goal = self._pending_goal
+                self._pending_goal = None
+                self._goal_event.clear()
+            if goal is not None:
+                self.move_to(*goal)
 
     # ------------------------------------------------------------------
     # Position-setpoint control

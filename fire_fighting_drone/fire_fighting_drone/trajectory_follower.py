@@ -44,6 +44,7 @@ class TrajectoryFollower(Node):
         self.vnet = self.declare_parameter('v_net', 1.0).value
         self.derror = 5.0
         self.closest_point_index = 0
+        self.target_point_index = None
         self.error = None
         self.current_points = None
         self.number_of_points = None
