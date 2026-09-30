@@ -123,7 +123,19 @@ public:
     RrtNbvpResult result;
     result.best_utility = best_utility;
     result.best_gain = tree[best_index].gain;
-    result.exploration_complete = (best_index == 0) || (tree[best_index].gain < params_.gain_threshold);
+
+    // Only declare exploration complete once the tree actually grew (i.e. at
+    // least one collision-free, in-bounds extension was found this cycle)
+    // and every accepted node's information gain was below threshold. If
+    // every sample was rejected (e.g. unlucky random sampling), best_index
+    // stays 0 with tree.size() == 1: that means "try again next cycle", not
+    // "nothing left to explore".
+    double max_gain_seen = 0.0;
+    for (size_t i = 1; i < tree.size(); ++i) {
+      max_gain_seen = std::max(max_gain_seen, tree[i].gain);
+    }
+    result.exploration_complete =
+      (tree.size() > 1) && (max_gain_seen < params_.gain_threshold);
 
     // Backtrack from the best node to the root, then reverse to get root->best.
     std::vector<RrtNode> path;

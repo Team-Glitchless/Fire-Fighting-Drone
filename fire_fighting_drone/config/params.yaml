@@ -3,6 +3,7 @@ flight_controller:
     position_tolerance: 0.1
     yaw_tolerance: 0.01
     follow_nbvp_goals: true
+    nbvp_altitude_override_enabled: true
     nbvp_altitude_override: 3.0
 
 object_detection:

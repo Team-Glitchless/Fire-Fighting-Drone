@@ -69,7 +69,9 @@ class FlightController(Node):
         self.delta_yaw = self.declare_parameter('yaw_tolerance', 0.01).value
         self.waypoint_number = 0
         self.follow_nbvp_goals = self.declare_parameter('follow_nbvp_goals', True).value
-        self.nbvp_altitude = self.declare_parameter('nbvp_altitude_override', 0.0).value
+        self.nbvp_altitude_override_enabled = self.declare_parameter(
+            'nbvp_altitude_override_enabled', True).value
+        self.nbvp_altitude = self.declare_parameter('nbvp_altitude_override', 3.0).value
 
         # Subscribers.
         self.create_subscription(
@@ -130,7 +132,10 @@ class FlightController(Node):
         done_event = threading.Event()
         future = client.call_async(request)
         future.add_done_callback(lambda _future: done_event.set())
-        done_event.wait(timeout=timeout_sec)
+        if not done_event.wait(timeout=timeout_sec):
+            self.get_logger().warn(
+                f'Service call to {client.srv_name} timed out after {timeout_sec}s')
+            return None
         return future.result()
 
     def toggle_arm(self, arm_bool):
@@ -215,7 +220,7 @@ class FlightController(Node):
         """
         if not self.follow_nbvp_goals:
             return
-        z = msg.point.z if self.nbvp_altitude == 0.0 else self.nbvp_altitude
+        z = self.nbvp_altitude if self.nbvp_altitude_override_enabled else msg.point.z
         self.get_logger().info(
             f'Received NBVP goal: ({msg.point.x:.2f}, {msg.point.y:.2f}, {z:.2f})')
         with self._goal_lock:
