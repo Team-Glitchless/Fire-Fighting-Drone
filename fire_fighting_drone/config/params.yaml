@@ -1,0 +1,35 @@
+flight_controller:
+  ros__parameters:
+    position_tolerance: 0.1
+    yaw_tolerance: 0.01
+    follow_nbvp_goals: true
+    nbvp_altitude_override_enabled: true
+    nbvp_altitude_override: 3.0
+
+object_detection:
+  ros__parameters:
+    weights_path: "checkpoints/yolov3.tf"
+    image_size: 416
+    detection_period_sec: 0.2
+
+nbvp_planner:
+  ros__parameters:
+    bound_min_x: -5.0
+    bound_min_y: -15.0
+    bound_min_z: 0.3
+    bound_max_x: 5.0
+    bound_max_y: 15.0
+    bound_max_z: 5.0
+    max_iterations: 300
+    extension_range: 1.5
+    collision_check_resolution: 0.1
+    sensor_range: 5.0
+    horizontal_fov: 1.2217
+    vertical_fov: 0.7854
+    horizontal_rays: 5
+    vertical_rays: 3
+    yaw_samples: 12
+    lambda: 0.5
+    gain_threshold: 5.0
+    min_node_separation: 0.3
+    replan_period_sec: 2.0
